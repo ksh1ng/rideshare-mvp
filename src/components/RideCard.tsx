@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Ride, RideType } from '../types';
+import { Ride, RideType } from '@/types';
 import { createClient } from '@/lib/supabase/client';
 
 interface RideCardProps {

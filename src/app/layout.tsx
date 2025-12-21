@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar"; // 1. 引入 Navbar 組件
+import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,9 +13,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// 修改為英文 Metadata
 export const metadata: Metadata = {
-  title: "RideShare - 輕鬆共乘",
-  description: "全台最便利的共乘媒合平台",
+  title: "RideShare - Smart Carpooling",
+  description: "Find your carpool buddy easily.",
 };
 
 export default function RootLayout({
@@ -24,17 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-TW">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50`}
-      >
-        {/* 2. 放置 Navbar，它會顯示在所有頁面最上方 */}
+    <html lang="en"> {/* 語言設定為英文 */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50`}>
         <Navbar />
-
-        {/* 3. 使用 main 包裹內容，確保佈局整齊 */}
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
       </body>
     </html>
   );

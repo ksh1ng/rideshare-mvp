@@ -62,6 +62,9 @@ const Navbar: React.FC = () => {
               <Link href="/rides/create" className={`${isActive('/rides/create') ? 'border-blue-500 text-slate-900' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full transition-colors`}>
                 Post a Trip
               </Link>
+              <Link href="/my-trips" className={`${isActive('/my-trips') ? 'border-blue-500 text-slate-900' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full transition-colors`}>
+                My Trips
+              </Link>
             </div>
           </div>
 

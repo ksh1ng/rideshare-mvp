@@ -1,7 +1,9 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import RideCard from '@/components/RideCard';
-import { Car, Ticket, CalendarDays } from 'lucide-react'; // 修正了這裡的空格
+import { Car, Ticket, CalendarDays, Settings2 } from 'lucide-react'; // 加入 Settings2
+import Link from 'next/link'; // <--- 補上這這一行
+
 
 export default async function MyTripsPage() {
   const supabase = await createClient();

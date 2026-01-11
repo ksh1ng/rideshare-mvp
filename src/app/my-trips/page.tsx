@@ -69,7 +69,7 @@ export default async function MyTripsPage() {
           </div>
         </section>
 
-        {/* Section 2: Your Posts */}
+        {/* Section 2: Your Posts (司機身分) */}
         <section>
           <div className="flex items-center gap-2 mb-4">
             <Car className="h-5 w-5 text-emerald-600" />
@@ -79,7 +79,19 @@ export default async function MyTripsPage() {
           <div className="space-y-4">
             {myPosts && myPosts.length > 0 ? (
               myPosts.map((ride: any) => (
-                <RideCard key={ride.id} ride={ride} />
+                <div key={ride.id} className="relative group">
+                  {/* 1. 原本的行程卡片 */}
+                  <RideCard ride={ride} />
+
+                  {/* 2. 加入管理按鈕：定位在卡片右上角，平時半透明，滑鼠移過時明顯 */}
+                  <Link
+                    href={`/my-trips/${ride.id}/manage`}
+                    className="absolute top-4 right-4 z-20 bg-slate-900 text-white text-[10px] font-black uppercase px-3 py-2 rounded-lg shadow-xl hover:bg-blue-600 transition-all flex items-center gap-1.5 active:scale-95"
+                  >
+                    <Settings2 className="h-3 w-3" />
+                    Manage Requests
+                  </Link>
+                </div>
               ))
             ) : (
               <div className="bg-white rounded-2xl p-8 text-center border border-slate-200 border-dashed">

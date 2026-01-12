@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import RideCard from '@/components/RideCard';
-import { Car, Ticket, CalendarDays, Settings2 } from 'lucide-react'; // 加入 Settings2
-import Link from 'next/link'; // <--- 補上這這一行
+import { Car, Ticket, CalendarDays, Settings2 } from 'lucide-react';
+import Link from 'next/link';
 
 
 export default async function MyTripsPage() {

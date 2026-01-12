@@ -43,11 +43,16 @@ export default function ManageRidePage() {
   const handleAction = async (bookingId: string, status: 'CONFIRMED' | 'CANCELLED') => {
     setProcessingId(bookingId);
     try {
-      await updateBookingStatus(bookingId, rideId, status, ride.available_seats);
-      await fetchData(); // 重新抓取資料更新 UI
+      const result = await updateBookingStatus(bookingId, rideId, status, ride.available_seats);
+
+      // 成功後
+      await fetchData();
       router.refresh();
-    } catch (error) {
-      alert('Operation failed');
+      console.log("Update successful");
+    } catch (error: any) {
+      console.error('Update Error:', error);
+      // 這裡會跳出錯誤訊息，例如 "new row violates row level security policy"
+      alert(`Failed to update: ${error.message || 'Unknown error'}`);
     } finally {
       setProcessingId(null);
     }

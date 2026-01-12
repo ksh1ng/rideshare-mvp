@@ -39,7 +39,7 @@ CREATE TRIGGER on_auth_user_created
 CREATE TABLE rides (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at timestamp with time zone DEFAULT now() NOT NULL,
-  
+
   -- 匹配 UI 裡的 user_id
   user_id uuid REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
 
@@ -53,7 +53,7 @@ CREATE TABLE rides (
   total_seats integer NOT NULL,
   available_seats integer NOT NULL,
   price_per_seat numeric NOT NULL,
-  
+
   -- 其他資訊
   description text,
   status text DEFAULT 'OPEN' NOT NULL -- 匹配您 UI 中的 'OPEN'
@@ -65,10 +65,10 @@ CREATE TABLE rides (
 CREATE TABLE bookings (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at timestamp with time zone DEFAULT now() NOT NULL,
-  
+
   ride_id uuid REFERENCES rides(id) ON DELETE CASCADE NOT NULL,
   passenger_id uuid REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
-  
+
   seats integer NOT NULL, -- 預訂位數
   status text DEFAULT 'PENDING' NOT NULL -- 'PENDING', 'CONFIRMED', 'CANCELLED'
 );
@@ -95,3 +95,14 @@ CREATE POLICY "Users can view own bookings" ON bookings FOR SELECT USING (auth.u
   SELECT 1 FROM rides WHERE rides.id = ride_id AND rides.user_id = auth.uid()
 ));
 CREATE POLICY "Users can insert bookings" ON bookings FOR INSERT WITH CHECK (auth.uid() = passenger_id);
+
+-- 允許司機更新他行程下的預訂 (為了 Confirm/Reject)
+-- 或是允許乘客更新自己的預訂 (為了 Cancel)
+CREATE POLICY "b3" ON bookings FOR UPDATE USING (
+  auth.uid() = passenger_id OR
+  EXISTS (
+    SELECT 1 FROM rides
+    WHERE rides.id = bookings.ride_id
+    AND rides.user_id = auth.uid()
+  )
+);

@@ -3,8 +3,19 @@
 import React, { useState } from 'react';
 import { Ride, RideType } from '@/types';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter } from 'next/navigation'; // 引入 router
-import { ChevronDown, ChevronUp, MessageSquare, Phone, Calendar, Clock, Star, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import {
+  ChevronDown,
+  ChevronUp,
+  MessageSquare,
+  Phone,
+  Calendar,
+  Clock,
+  Star,
+  Loader2,
+  MapPin,
+  Circle
+} from 'lucide-react';
 
 interface RideCardProps {
   ride: Ride;
@@ -18,12 +29,21 @@ const RideCard: React.FC<RideCardProps> = ({ ride }) => {
 
   const isDriver = ride.type === RideType.DRIVER_OFFERING;
   const departureDate = new Date(ride.departure_time);
-  const formattedDate = departureDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', weekday: 'short' });
-  const formattedTime = departureDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
-  // --- 實作預訂邏輯 ---
+  // 格式化時間與日期
+  const formattedDate = departureDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    weekday: 'short'
+  });
+  const formattedTime = departureDate.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit'
+  });
+
   const handleRequest = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation(); // 防止點擊按鈕時觸發卡片展開
+
     if (requestStatus !== 'IDLE' || ride.available_seats === 0) return;
 
     // 1. 獲取當前用戶
@@ -34,7 +54,7 @@ const RideCard: React.FC<RideCardProps> = ({ ride }) => {
       return;
     }
 
-    // 2. 檢查是否為自己的行程
+    // 2. 檢查是否為自己的行程 (司機不能訂自己的車)
     if (user.id === ride.user_id) {
       alert("You cannot book your own trip.");
       return;
@@ -43,20 +63,19 @@ const RideCard: React.FC<RideCardProps> = ({ ride }) => {
     setRequestStatus('SENDING');
 
     try {
-      // 3. 插入資料到 bookings 表格 (根據你的 SQL 結構)
+      // 3. 插入資料到 bookings 表格 (僅新增預訂，不扣除座位)
       const { error: bookingError } = await supabase
         .from('bookings')
         .insert([
           {
             ride_id: ride.id,
             passenger_id: user.id,
-            seats: 1, // 預設預訂 1 位
+            seats: 1,
             status: 'PENDING'
           }
         ]);
 
       if (bookingError) {
-        // 處理重複預訂 (SQL Unique Constraint)
         if (bookingError.code === '23505') {
           alert('You have already requested this ride.');
         } else {
@@ -66,18 +85,9 @@ const RideCard: React.FC<RideCardProps> = ({ ride }) => {
         return;
       }
 
-      // 4. 更新 rides 表格的剩餘座位 (available_seats)
-      // 注意：這在大型應用建議用 RPC 或 Trigger 做，MVP 階段可先在前端處理
-      const { error: updateError } = await supabase
-        .from('rides')
-        .update({ available_seats: ride.available_seats - 1 })
-        .eq('id', ride.id);
-
-      if (updateError) throw updateError;
-
-      // 5. 成功狀態
+      // 4. 成功狀態回饋 (注意：此時不執行更新 rides 表格的動作)
       setRequestStatus('ACCEPTED');
-      router.refresh(); // 重新整理頁面數據
+      router.refresh();
 
     } catch (error: any) {
       console.error('Booking failed:', error.message);
@@ -94,9 +104,8 @@ const RideCard: React.FC<RideCardProps> = ({ ride }) => {
       }`}
     >
       <div className="p-5 flex flex-col md:flex-row justify-between gap-6 group">
-        {/* 左側資訊保持不變... */}
+        {/* Left Section: Route & Time */}
         <div className="flex-1">
-          {/* ... (同前次提供的 Navbar/Layout 整合內容) */}
           <div className="flex items-center gap-3 mb-4">
             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
               isDriver ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
@@ -111,21 +120,37 @@ const RideCard: React.FC<RideCardProps> = ({ ride }) => {
             </span>
           </div>
 
-          {/* Route Section */}
           <div className="relative pl-6 space-y-6">
             <div className="absolute left-[9px] top-2 bottom-4 w-0.5 bg-slate-100"></div>
-            <div>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider">Origin</p>
-              <p className="text-lg font-bold text-slate-900">{ride.origin}</p>
+            <div className="relative">
+              <div className="absolute -left-[24px] top-1 h-4 w-4 rounded-full border-2 border-slate-300 bg-white group-hover:border-blue-500 transition-colors"></div>
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-0.5">Origin</p>
+              <p className="text-lg font-bold text-slate-900 leading-none">{ride.origin}</p>
+            </div>
+            <div className="relative">
+              <div className="absolute -left-[24px] top-1 h-4 w-4 rounded-full border-2 border-blue-500 bg-blue-500"></div>
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-0.5">Destination</p>
+              <p className="text-lg font-bold text-slate-900 leading-none">{ride.destination}</p>
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-center gap-3 pt-4 border-t border-slate-50">
+            <div className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-sm font-bold text-blue-700">
+              {ride.user?.full_name?.charAt(0).toUpperCase() || 'U'}
             </div>
             <div>
-              <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider">Destination</p>
-              <p className="text-lg font-bold text-slate-900">{ride.destination}</p>
+              <p className="text-sm font-bold text-slate-900">{ride.user?.full_name || 'Anonymous User'}</p>
+              <div className="flex items-center text-[11px] text-slate-500 font-bold">
+                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500 mr-1" />
+                <span className="mr-1">{ride.user?.rating || 'New'}</span>
+                <span className="text-slate-300 mx-1">•</span>
+                <span className="text-blue-500">Verified Profile</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* 右側按鈕與價格 */}
+        {/* Right Section: Price & Action */}
         <div className="flex flex-row md:flex-col justify-between items-center md:items-end border-t md:border-t-0 md:border-l border-slate-50 pt-4 md:pt-0 md:pl-6 min-w-[180px]">
           <div className="text-right hidden md:block">
             <p className="text-3xl font-black text-slate-900 tracking-tight">${ride.price_per_seat}</p>
@@ -148,25 +173,27 @@ const RideCard: React.FC<RideCardProps> = ({ ride }) => {
                     ? 'bg-slate-200 text-slate-500 cursor-not-allowed shadow-none'
                     : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-100'
                 }
+                ${requestStatus === 'SENDING' ? 'opacity-70 cursor-wait' : ''}
               `}
             >
               {requestStatus === 'SENDING' && <Loader2 className="w-4 h-4 animate-spin" />}
               {requestStatus === 'SENDING'
                 ? 'Processing...'
                 : requestStatus === 'ACCEPTED'
-                  ? 'Request Sent'
+                  ? 'Requested'
                   : ride.available_seats === 0
                     ? 'Sold Out'
                     : 'Book Now'}
             </button>
-            <div className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+            <div className="flex items-center justify-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+              {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
               {isExpanded ? 'Hide Details' : 'View Details'}
             </div>
           </div>
         </div>
       </div>
 
-      {/* 展開備註部分 */}
+      {/* Expanded Section: Description/Comment */}
       {isExpanded && (
         <div className="bg-slate-50 border-t border-slate-100 p-5 animate-in slide-in-from-top-2 duration-300">
           <div className="flex items-start gap-2 mb-3">
@@ -177,15 +204,14 @@ const RideCard: React.FC<RideCardProps> = ({ ride }) => {
             {ride.description || "No specific comments provided for this trip."}
           </div>
 
-          {/* 若預訂成功，顯示額外提示 */}
           {requestStatus === 'ACCEPTED' && (
             <div className="bg-green-100 border border-green-200 rounded-xl p-4 flex items-center gap-3">
               <div className="bg-green-500 p-2 rounded-full">
                 <Phone className="h-4 w-4 text-white" />
               </div>
               <div>
-                <p className="text-xs text-green-800 font-bold uppercase tracking-tight">Booking Pending</p>
-                <p className="text-sm text-green-700">Check "My Trips" later for updates.</p>
+                <p className="text-xs text-green-800 font-bold uppercase tracking-tight">Request Sent</p>
+                <p className="text-sm text-green-700">The driver will review your request shortly.</p>
               </div>
             </div>
           )}

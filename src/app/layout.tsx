@@ -1,56 +1,67 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import MobileNav from "@/components/MobileNav"; // 這是我們準備加入的手機底部導覽列
 
-const inter = Inter({ subsets: ["latin"] });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-// 1. PWA 與 iOS 相關的 Metadata 設定
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+// 1. PWA 與 SEO Metadata 設定
 export const metadata: Metadata = {
-  title: "RideShare",
-  description: "Share the Ride, Split the Cost",
-  manifest: "/manifest.json", // 指向 public/manifest.json
+  title: "RideShare - Smart Carpooling",
+  description: "Find your carpool buddy easily.",
+  manifest: "/manifest.json", // PWA 核心設定
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "RideShare",
-    // 這裡可以定義 iOS 啟動畫面圖示
   },
   formatDetection: {
-    telephone: false, // 防止數字被自動轉成連結（我們在 My Trips 手動處理過了）
+    telephone: false,
   },
 };
 
-// 2. 針對手機版體驗的 Viewport 設定
+// 2. 移動端優化 Viewport 設定
 export const viewport: Viewport = {
-  themeColor: "#2563eb", // 瀏覽器工具列顏色（對應你的品牌藍）
+  themeColor: "#2563eb",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  userScalable: false, // 禁用縮放，使 UI 操作更像原生 App
+  userScalable: false, // 禁止縮放讓操作更像 App
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="zh-TW">
+    <html lang="en">
       <head>
-        {/* iOS 圖示設定 */}
+        {/* iOS 圖示 */}
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-        {/* 確保 PWA 的色彩在各系統一致 */}
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className={`${inter.className} bg-slate-50 antialiased`}>
-        <main className="min-h-screen">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50`}>
+        {/* 原本的 Navbar (之後會在組件內加入 hidden md:block 以便在手機隱藏) */}
+        <Navbar />
+
+        {/* main 加入 pb-20 是為了在手機版預留空間給底部的 MobileNav，
+            md:pb-0 則讓電腦版不留白。
+        */}
+        <main className="min-h-screen pb-20 md:pb-0">
           {children}
         </main>
 
-        {/* 提示：如果你之後實作了 MobileBottomNav 組件，
-            通常會放在這裡，並判斷是否為手機尺寸顯示。
-        */}
+        {/* 這裡加入新的手機底部導覽列 */}
+        // <MobileNav />
       </body>
     </html>
   );

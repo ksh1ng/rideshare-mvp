@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-//import MobileNav from "@/components/MobileNav"; // 這是我們準備加入的手機底部導覽列
+/*import MobileNav from "@/components/MobileNav"; */ // 這是我們準備加入的手機底部導覽列
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,7 +61,7 @@ export default function RootLayout({
         </main>
 
         {/* 這裡加入新的手機底部導覽列 */}
-        // <MobileNav />
+        /* <MobileNav /> */
       </body>
     </html>
   );

@@ -61,7 +61,6 @@ export default function RootLayout({
         </main>
 
         {/* 這裡加入新的手機底部導覽列 */}
-        /* <MobileNav /> */
       </body>
     </html>
   );

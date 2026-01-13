@@ -57,7 +57,6 @@ export default function ProfilePage() {
       .update({
         full_name: profile.full_name,
         phone: profile.phone,
-        updated_at: new Date().toISOString(),
       })
       .eq('id', user.id);
 

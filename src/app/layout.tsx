@@ -6,8 +6,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 // 1. PWA 與 iOS 相關的 Metadata 設定
 export const metadata: Metadata = {
-  title: "RideShare - 大學共乘平台",
-  description: "快速、安全、便利的校園共乘媒合服務",
+  title: "RideShare",
+  description: "Share the Ride, Split the Cost",
   manifest: "/manifest.json", // 指向 public/manifest.json
   appleWebApp: {
     capable: true,

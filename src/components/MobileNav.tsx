@@ -8,10 +8,10 @@ const MobileNav = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { label: "找行程", href: "/", icon: Search },
-    { label: "我的行程", href: "/my-trips", icon: Car },
-    { label: "發布", href: "/post-trip", icon: PlusSquare },
-    { label: "個人", href: "/profile", icon: Home },
+    { label: "Find a Ride", href: "/", icon: Search },
+    { label: "My Trip", href: "/my-trips", icon: Car },
+    { label: "Post a Trip", href: "/post-trip", icon: PlusSquare },
+    { label: "Profile", href: "/profile", icon: Home },
   ];
 
   return (
@@ -21,8 +21,8 @@ const MobileNav = () => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
           return (
-            <Link 
-              key={item.href} 
+            <Link
+              key={item.href}
               href={item.href}
               className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${
                 isActive ? "text-blue-600" : "text-slate-500"

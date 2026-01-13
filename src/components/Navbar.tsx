@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
               <Link href="/my-trips" className={`${isActive('/my-trips') ? 'border-blue-500 text-slate-900' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full transition-colors`}>
                 My Trips
               </Link>
-              <Link href="/profile" className="px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-100 rounded-xl transition-colors">
+              <Link href="/profile" className={`${isActive('/my-trips') ? 'border-blue-500 text-slate-900' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full transition-colors`}>
                 Profile Settings
               </Link>
             </div>

@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { LogIn, PlusCircle, Search } from 'lucide-react';
+import { LogIn, PlusCircle, Search, BellRing } from 'lucide-react';
+import NotificationBtn from "@/components/NotificationBtn";
 
 export default function Home() {
   const router = useRouter();
@@ -42,9 +43,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Hero Section with Brand Blue Background */}
+      {/* Hero Section */}
       <div className="relative bg-blue-600 overflow-hidden">
-        {/* Decorative background circle */}
         <div className="absolute top-0 right-0 -mt-20 -mr-20 hidden lg:block">
            <div className="w-96 h-96 bg-blue-500 rounded-full opacity-20 blur-3xl"></div>
         </div>
@@ -58,13 +58,11 @@ export default function Home() {
                   <span className="block text-blue-200 xl:inline">split the cost.</span>
                 </h1>
                 <p className="mt-3 text-base text-blue-100 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  Whether it's a daily commute or a weekend getaway, travel with like-minded people. Save money, reduce traffic, and make new friends on your journey.
+                  Whether it's a daily commute or a weekend getaway, travel with like-minded people. Save money, reduce traffic, and make new friends.
                 </p>
 
-                {/* Dynamic Call-to-Action Buttons */}
                 <div className="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
                   {user ? (
-                    // Logged In State
                     <>
                       <Link
                         href="/rides/create"
@@ -81,7 +79,6 @@ export default function Home() {
                       </Link>
                     </>
                   ) : (
-                    // Logged Out State - Prominent Login Option
                     <>
                       <Link
                         href="/login"
@@ -111,82 +108,99 @@ export default function Home() {
           <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
             <div className="flex flex-col gap-2">
               <label htmlFor="origin" className="text-sm font-bold text-slate-700 uppercase tracking-wider">Leaving from</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  id="origin"
-                  placeholder="City, station or place"
-                  value={origin}
-                  onChange={(e) => setOrigin(e.target.value)}
-                  className="w-full bg-slate-50 text-slate-900 rounded-xl border-slate-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-4 border transition-all"
-                />
-              </div>
+              <input
+                type="text"
+                id="origin"
+                placeholder="City or place"
+                value={origin}
+                onChange={(e) => setOrigin(e.target.value)}
+                className="w-full bg-slate-50 text-slate-900 rounded-xl border-slate-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-4 border transition-all"
+              />
             </div>
-
             <div className="flex flex-col gap-2">
               <label htmlFor="destination" className="text-sm font-bold text-slate-700 uppercase tracking-wider">Going to</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  id="destination"
-                  placeholder="Where to?"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  className="w-full bg-slate-50 text-slate-900 rounded-xl border-slate-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-4 border transition-all"
-                />
-              </div>
+              <input
+                type="text"
+                id="destination"
+                placeholder="Where to?"
+                value={destination}
+                onChange={(e) => setDestination(e.target.value)}
+                className="w-full bg-slate-50 text-slate-900 rounded-xl border-slate-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-4 border transition-all"
+              />
             </div>
-
             <div className="flex flex-col gap-2">
-              <label htmlFor="date" className="text-sm font-bold text-slate-700 uppercase tracking-wider">Departure Date</label>
-              <div className="relative">
-                <input
-                  type="date"
-                  id="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full bg-slate-50 text-slate-900 rounded-xl border-slate-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-4 border transition-all"
-                />
-              </div>
+              <label htmlFor="date" className="text-sm font-bold text-slate-700 uppercase tracking-wider">Date</label>
+              <input
+                type="date"
+                id="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full bg-slate-50 text-slate-900 rounded-xl border-slate-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-4 border transition-all"
+              />
             </div>
-
             <button
               type="submit"
-              className="w-full bg-blue-600 border border-transparent rounded-xl shadow-lg py-4 px-4 text-lg font-bold text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all flex items-center justify-center gap-2"
+              className="w-full bg-blue-600 border border-transparent rounded-xl shadow-lg py-4 px-4 text-lg font-bold text-white hover:bg-blue-700 transition-all flex items-center justify-center gap-2"
             >
               <Search className="h-5 w-5" />
-              Search Rides
+              Search
             </button>
           </form>
+
+          {/* New Driver Notification Section */}
+          <div className="mt-10 pt-8 border-t border-slate-100">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6 bg-blue-50 p-6 rounded-2xl border border-blue-100">
+              <div className="flex items-center gap-4 text-center md:text-left">
+                <div className="bg-blue-600 p-3 rounded-full text-white">
+                  <BellRing className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900">Driver Control Center</h3>
+                  <p className="text-sm text-slate-600">Get instant alerts for new ride requests even when offline.</p>
+                </div>
+              </div>
+              <NotificationBtn />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Core Features */}
+      {/* Features Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-          <div className="text-center p-8 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="h-14 w-14 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-6">
-              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-            </div>
-            <h3 className="text-xl font-bold text-slate-900">Verified Profiles</h3>
-            <p className="mt-3 text-base text-slate-500 leading-relaxed">Safety first. All members are verified with a rating system, ensuring every journey is secure and reliable.</p>
-          </div>
-          <div className="text-center p-8 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="h-14 w-14 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-6">
-               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </div>
-            <h3 className="text-xl font-bold text-slate-900">Smart Savings</h3>
-            <p className="mt-3 text-base text-slate-500 leading-relaxed">Stop paying full price for solo travel. Share fuel costs and tolls with others going your way.</p>
-          </div>
-          <div className="text-center p-8 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="h-14 w-14 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-6">
-               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </div>
-            <h3 className="text-xl font-bold text-slate-900">Better for Earth</h3>
-            <p className="mt-3 text-base text-slate-500 leading-relaxed">Reduce traffic congestion and CO2 emissions by making efficient use of every empty seat.</p>
-          </div>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 text-center">
+          <FeatureCard
+            icon={<svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>}
+            bg="bg-blue-100" text="text-blue-600"
+            title="Verified Profiles"
+            desc="Safety first. Every journey is secure and reliable with our rating system."
+          />
+          <FeatureCard
+            icon={<svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
+            bg="bg-emerald-100" text="text-emerald-600"
+            title="Smart Savings"
+            desc="Share fuel costs and tolls with others going your way. Travel for less."
+          />
+          <FeatureCard
+            icon={<svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
+            bg="bg-indigo-100" text="text-indigo-600"
+            title="Eco Friendly"
+            desc="Reduce traffic and CO2 emissions by filling empty seats. Save the planet."
+          />
         </div>
       </div>
+    </div>
+  );
+}
+
+// Helper component for cleaner code
+function FeatureCard({ icon, bg, text, title, desc }: { icon: React.ReactNode, bg: string, text: string, title: string, desc: string }) {
+  return (
+    <div className="p-8 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+      <div className={`h-14 w-14 ${bg} ${text} rounded-xl flex items-center justify-center mx-auto mb-6`}>
+        {icon}
+      </div>
+      <h3 className="text-xl font-bold text-slate-900">{title}</h3>
+      <p className="mt-3 text-base text-slate-500 leading-relaxed">{desc}</p>
     </div>
   );
 }

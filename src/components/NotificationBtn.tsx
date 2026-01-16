@@ -24,4 +24,4 @@ export default function NotificationBtn() {
       開啟司機訂閱通知
     </button>
   );
-}:
+}

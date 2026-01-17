@@ -24,6 +24,10 @@ export const usePushNotification = () => {
 
       // 4. 取得公鑰
       const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      // 診斷：看看 window 物件是否真的沒被注入
+      if (typeof window !== "undefined") {
+        console.log("Full Env Check:", process.env);
+      }
       // 新增這行來檢查
       console.log("Debug VAPID Key:", publicKey ? "Length: " + publicKey.length : "IS UNDEFINED");
 

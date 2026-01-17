@@ -22,8 +22,11 @@ export const usePushNotification = () => {
         return existingSubscription;
       }
 
-      // 4. 取得公鑰 (從 .env.local 讀取)
+      // 4. 取得公鑰
       const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+      // 新增這行來檢查
+      console.log("Debug VAPID Key:", publicKey ? "Length: " + publicKey.length : "IS UNDEFINED");
+
       if (!publicKey) throw new Error("缺少 VAPID 公鑰，請檢查 .env.local");
 
       // 5. 執行訂閱 (這會觸發瀏覽器的權限詢問視窗)

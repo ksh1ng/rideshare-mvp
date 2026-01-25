@@ -28,7 +28,9 @@ export async function GET() {
   });
 
   try {
-    const response = await webpush.sendNotification(sub.subscription, payload);
+    const response = await webpush.sendNotification(sub.subscription, payload, {
+  TTL: 60 // 訊息在推播伺服器保留 60 秒
+});
     // 回傳詳細的 HTTP 狀態碼
     return NextResponse.json({
       success: true,

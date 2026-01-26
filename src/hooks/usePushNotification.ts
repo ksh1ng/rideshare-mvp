@@ -16,12 +16,12 @@ export const usePushNotification = () => {
       const registration = await navigator.serviceWorker.ready;
 
       // 3. 檢查現有的訂閱
-      const existingSubscription = await registration.pushManager.getSubscription();
-      if (existingSubscription) {
-        console.log("使用者已經訂閱過:", existingSubscription);
-        await existingSubscription.unsubscribe();
-        console.log("已清理舊訂閱");
-      }
+      // const existingSubscription = await registration.pushManager.getSubscription();
+      // if (existingSubscription) {
+      //   console.log("使用者已經訂閱過:", existingSubscription);
+      //   await existingSubscription.unsubscribe();
+      //   console.log("已清理舊訂閱");
+      // }
 
       // 4. 取得公鑰
       const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;

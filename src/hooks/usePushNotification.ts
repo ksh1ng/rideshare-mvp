@@ -19,7 +19,8 @@ export const usePushNotification = () => {
       const existingSubscription = await registration.pushManager.getSubscription();
       if (existingSubscription) {
         console.log("使用者已經訂閱過:", existingSubscription);
-        return existingSubscription;
+        await existingSubscription.unsubscribe();
+        console.log("已清理舊訂閱");
       }
 
       // 4. 取得公鑰
@@ -29,7 +30,7 @@ export const usePushNotification = () => {
         console.log("Full Env Check:", process.env);
       }
       // 新增這行來檢查
-      console.log("Debug VAPID Key:", publicKey ? "Length: " + publicKey.length : "IS UNDEFINED");
+      console.log("Debug VAPID Key:", publicKey); // 確保這裡不是 undefined 或包含多餘引號
 
       if (!publicKey) throw new Error("缺少 VAPID 公鑰，請檢查 .env.local");
 

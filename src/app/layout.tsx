@@ -50,6 +50,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50`}>
+        {/* 在這裡加入註冊組件 */}
+        <ServiceWorkerRegister />
+
         {/* 原本的 Navbar (之後會在組件內加入 hidden md:block 以便在手機隱藏) */}
         <Navbar />
 
